@@ -58,7 +58,7 @@ class Board:
     # return: Tile[]
     #   a list of tiles, affected by the change
     #================================================================================
-    def giveAffectedTiles(self, subsecRow, subsecCol, row, col):
+    def getAffectedTiles(self, subsecRow, subsecCol, row, col):
         affectedTiles = []
         for i in range(self.size):
             for j in range (self.size):
@@ -89,7 +89,7 @@ class Board:
     #   a list of tile positions. each Element has the structure
     #   [subsecRow, subsecCol, row, col]
     #================================================================================
-    def giveAffectedPos(self, subsecRow, subsecCol, row, col):
+    def getAffectedPos(self, subsecRow, subsecCol, row, col):
         affectedPos = []
         for i in range(self.size):
             for j in range (self.size):
@@ -129,7 +129,7 @@ class Board:
         elif value in theTile.possib:
             theTile.setValue(value)
             # delete possible value from every affected tile
-            for elem in self.giveAffectedTiles(subsecRow, subsecCol, row, col):
+            for elem in self.getAffectedTiles(subsecRow, subsecCol, row, col):
                 elem.delPossib(value)
             return True
         else:
@@ -162,19 +162,19 @@ class Board:
             if value == 0:
                 return False
             else:
-                affectedTiles = self.giveAffectedTiles(subsecRow, subsecCol, row, col)
+                affectedTiles = self.getAffectedTiles(subsecRow, subsecCol, row, col)
                 # this tile cannot have Values already in the affectedTiles
                 for elem in affectedTiles:
                     if elem.hasValue:
                         theTile.delPossib(elem.value)
                 
                 # positions affected by this tile
-                affectedPos = self.giveAffectedPos(subsecRow, subsecCol, row, col)
+                affectedPos = self.getAffectedPos(subsecRow, subsecCol, row, col)
                 # for every affected position
                 for pos in affectedPos:
                     isPossible = True
                     # check same row, column and subsection
-                    for elem in self.giveAffectedTiles(pos[0], pos[1], pos[2], pos[3]):
+                    for elem in self.getAffectedTiles(pos[0], pos[1], pos[2], pos[3]):
                         # if the value is anywhere in the same row, column or subsection,
                         # end this loop
                         if elem.value == value:

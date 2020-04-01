@@ -29,7 +29,6 @@ class Tile:
     def delPossib(self,value):
         if value in self.possib:
             self.possib.remove(value)
-            self.numOfPossib -= 1
             return True
         else:
             return False
@@ -46,13 +45,12 @@ class Tile:
     def addPossib(self,value):
         if not (value in self.possib):
             self.possib.append(value)
-            self.numOfPossib += 1
             return True
         else:
             return False
 
     #================================================================================
-    # short: this function gives the tile a value
+    # short: this function sets a tile value
     #--------------------------------------------------------------------------------
     # paramters:
     #   value: the value of the tile
@@ -65,7 +63,6 @@ class Tile:
             self.value = value
             self.hasValue = True
             self.possib.clear()
-            self.numOfPossib = 0
             return True
         else:
             return False
@@ -86,8 +83,8 @@ class Tile:
             return 0
         else:
             value = self.value
-            self.Value = 0
-            self.hasvalue = False
+            self.value = 0
+            self.hasValue = False
             self.possib = list(range(1,self.numOfPossib+1))
             return value
     
