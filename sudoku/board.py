@@ -24,7 +24,7 @@ class Board:
     #                |1 2 3|
     #                |4 5 6|    <-- subsection (size = 3) with size*size tiles
     #                |7 8 9|        addressing: [row][col]
-    #                 ¯¯¯¯¯
+    #                 -----
     #   
     # paramters:
     #   size: the width and height of one subsection
