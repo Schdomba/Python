@@ -62,7 +62,7 @@ class Tile:
         if value in self.possib:
             self.value = value
             self.hasValue = True
-            self.possib.clear()
+            del self.possib[:] 
             return True
         else:
             return False
