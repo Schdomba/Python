@@ -1,5 +1,7 @@
+import math
+import pygame
 class GUI:
-    def __init__(self, width = 600, height = 600):
+    def __init__(self, width = 1000, height = 1000):
         self.display_width = width
         self.display_height = height
         self.gameDisplay = pygame.display.set_mode((self.display_width,self.display_height))
@@ -22,12 +24,10 @@ class GUI:
     
         self.clock = pygame.time.Clock()
     
-    
     def text_objects(self, text, font, color):
         textSurface = font.render(text, True, color)
         return textSurface, textSurface.get_rect()
         
-
     def game_intro(self):
         #create the text for the game options
         optionsStr = ("4x4", "9x9", "16x16")
@@ -112,7 +112,6 @@ class GUI:
             pygame.draw.line(self.gameDisplay,self.black,(thickPosx,0),(thickPosx,self.display_height),4)
             pygame.draw.line(self.gameDisplay,self.black,(0,thickPosy),(self.display_width,thickPosy),4)
 
-
     def drawTilePossib(self, possib, pos):
         possib_width = self.display_width/(self.boardSize*self.subsecSize)
         possib_height = self.display_height/(self.boardSize*self.subsecSize)
@@ -123,8 +122,8 @@ class GUI:
         for i in range(1, self.subsecSize+1):
             for j in range(self.subsecSize):
                 if (i+self.subsecSize*j) in possib:
-                    temp = list(self.text_objects(str(i+self.subsecSize*j), self.smallText, self.grey)) + [i+self.subsecSize*j]
-                    temp[1].center = (((i-1)*possib_width+xoffset), (j*possib_height+yoffset))
+                    temp = list(self.text_objects(str(i+self.subsecSize*j), self.mediumText, self.grey))
+                    temp[1].center = (((i-1)*possib_height+yoffset),(j*possib_width+xoffset))
                     blitted.append(self.gameDisplay.blit(temp[0], temp[1]))
         return blitted
                 
@@ -134,12 +133,53 @@ class GUI:
         for i in range(len(self.tilePos)):
             blitted.append(self.drawTilePossib(possib[i], self.tilePos[i]))
         return blitted
+
+    def drawTileValues(self):
+        tileWidth = self.display_width/self.boardSize
+        tileHeight = self.display_height/self.boardSize
+        xoffset = tileWidth/2
+        yoffset = tileHeight/2
+        blitted = []
+        values = self.sd.getBoard()
+        print(values)
+
+        for i in range(len(values)):
+            for j in range(len(values[i])):
+                if values[i][j] != 0:
+                    temp = list(self.text_objects(str(values[i][j]), self.largeText, self.black))
+                    temp[1].center = ((j*tileWidth+xoffset), (i*tileHeight+yoffset))
+                    blitted.append(self.gameDisplay.blit(temp[0], temp[1]))
+        return blitted
         
-    #TBD!
+    def calcPos(self, pos):
+        tileWidth = self.display_width/self.boardSize
+        tileHeight = self.display_height/self.boardSize
+        possibWidth = self.display_width/(self.boardSize*self.subsecSize)
+        possibHeight = self.display_height/(self.boardSize*self.subsecSize)
+
+        #calculate which subsec row the tile is in
+        subsecRow = math.floor(pos[1]/(tileHeight*self.subsecSize))
+        #calculate which subsec column the tile is in
+        subsecCol = math.floor(pos[0]/(tileWidth*self.subsecSize))
+        #calculate which row inside of subsec
+        row = math.floor((pos[1] - subsecRow*tileHeight*self.subsecSize)/tileHeight)
+        #calculate which column inside of subsec
+        col = math.floor((pos[0] - subsecCol*tileWidth*self.subsecSize)/tileWidth)
+
+        #calculate which column inside this tile the possib is
+        possibCol = math.floor((pos[0] - subsecCol*tileWidth*self.subsecSize - col*tileWidth)/possibWidth)
+        #calculate which row inside this tile the possib is
+        possibRow = math.floor((pos[1] - subsecRow*tileHeight*self.subsecSize - row*tileHeight)/possibHeight)
+        #calculate which possib has been clicked based on col and row
+        possib = round(possibRow * self.subsecSize + possibCol + 1)
+        
+        return(list([subsecRow] + [subsecCol] + [row] + [col] + [possib]))
+
+    #TODO
     def game_loop(self):
         #print("in game_loop")
-        print(self.sd.getBoard())
-        self.sd.writeTile(0,0,0,0,1)
+        #print(self.sd.getBoard())
+        #self.sd.writeTile(0,0,0,0,1)
         self.subsecSize = self.sd.size
         self.boardSize = self.subsecSize*self.subsecSize
         for i in range(self.boardSize):
@@ -152,9 +192,9 @@ class GUI:
         while not gameExit:
             #always refresh the display in the beginning                
             self.gameDisplay.fill(self.white)
-            blitted = []
             self.drawLines()
-            blitted = self.drawPossib()
+            self.drawPossib()
+            self.drawTileValues()
             #get the length of board, get the square root to get height/width
             #create rectangles in a loop
             for event in pygame.event.get():
@@ -164,15 +204,18 @@ class GUI:
                     quit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #1 is left mouse button
+                    #check where the player clicked
                     pos = pygame.mouse.get_pos()
-                    for tile in blitted:
-                        for obj in tile:
-                            if obj.collidepoint(pos):
-                                print(obj)
-                    #check which tile has been clicked
-                    #mark this tile
-                    #let the player enter a number
+                    #calculate which tile and possible value that corresponds to
+                    possib = self.calcPos(pos)
+                    print(possib)
+                    #if player clicked on possible, write that to the tile
+                    if not self.sd.writeTile(possib[0],possib[1],possib[2],possib[3],possib[4]):
+                        #if tile already has a value, delete it
+                        self.sd.clearTile(possib[0],possib[1],possib[2],possib[3])
+                    
             pygame.display.update()
+            #fixed framerate
             self.clock.tick(60)
 
 
