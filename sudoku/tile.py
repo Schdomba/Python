@@ -43,7 +43,7 @@ class Tile:
     #   False if this value is already in possib
     #================================================================================
     def addPossib(self,value):
-        if not (value in self.possib):
+        if (not (value in self.possib)) and self.hasValue is False:
             self.possib.append(value)
             return True
         else:
