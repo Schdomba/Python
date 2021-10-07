@@ -7,15 +7,18 @@ class Sudoku:
     
     def getBoard(self):
         theBoard = self.board.board
-        output = ""
+        tmpRow = []
+        output = []
         printOutput = ""
         for subsecRow in range(self.size):
             for row in range(self.size):
                 for subsecCol in range(self.size):
                     for col in range(self.size):
-                        output += str(theBoard[subsecRow][subsecCol][row][col].value)
+                        tmpRow.append(theBoard[subsecRow][subsecCol][row][col].value)
                         printOutput += str(theBoard[subsecRow][subsecCol][row][col].value)
                     printOutput += "|"
+                output.append(tmpRow)
+                tmpRow = []
                 printOutput += "\n"
             printOutput += "--------\n"
         print(printOutput)
