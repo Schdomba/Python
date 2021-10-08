@@ -16,6 +16,32 @@ class Tile:
         self.possib = list(range(1,self.numOfPossib+1))
         self.value = 0
         self.hasValue = False
+        self.fixed = False
+
+        #getter
+        @property
+        def fixed(self):
+            return self.__fixed
+        #setter
+        @fixed.setter
+        def fixed(self, fix):
+            if fix is True:
+                if self.value == 0 and self.hasValue is False:
+                    self.__fixed = False
+                    raise RuntimeError("Can't set Tile to fixed because it has no value.")
+                else:
+                    self.__fixed = True
+                    return True
+            else:
+                if self.fixed is True:
+                    raise RuntimeError("Can't unfix a fixed tile.")
+                else:
+                    self.__fixed = False
+                    return True
+        #deleter
+        @fixed.deleter
+        def fixed(self):
+            raise 
 
     #================================================================================
     # short: this function deletes a possible value from possib
@@ -79,7 +105,7 @@ class Tile:
     #   the value that this tile had before clearing
     #================================================================================
     def clearValue(self):
-        if self.value == 0:
+        if self.value == 0 or self.fixed is True:
             return 0
         else:
             value = self.value
@@ -87,4 +113,3 @@ class Tile:
             self.hasValue = False
             self.possib = list(range(1,self.numOfPossib+1))
             return value
-    
