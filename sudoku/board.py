@@ -118,23 +118,25 @@ class Board:
     #   row: row inside the subsection in which the tile is located
     #   col: column inside the subsection in which the tile is located
     #   value: value that has to be written to the tile
+    #   fix: defines if Tile should be fixed or not
     # return: boolean
     #   True: the value was succesfully written to the tile
     #   False: this value cannot be written to the specified tile
     #================================================================================
-    def writeTile(self, subsecRow, subsecCol, row, col, value):
+    def writeTile(self, subsecRow, subsecCol, row, col, value, fix = False):
         theTile = self.board[subsecRow][subsecCol][row][col]
         if theTile.hasValue:
             return False
         elif value in theTile.possib:
             theTile.setValue(value)
+            theTile.fixed = fix
             # delete possible value from every affected tile
             for elem in self.getAffectedTiles(subsecRow, subsecCol, row, col):
                 elem.delPossib(value)
             return True
         else:
             return False
-    
+
     #================================================================================
     # short: this function clears the value of a tile
     #--------------------------------------------------------------------------------

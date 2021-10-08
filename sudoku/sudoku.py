@@ -38,7 +38,7 @@ class Sudoku:
                             output[i].append(subsecCol)
                             output[i].append(row)
                             output[i].append(col)       
-                            i += 1 
+                            i += 1
         return output
 
     def getPossib(self):
@@ -53,21 +53,28 @@ class Sudoku:
                         i += 1 
         return output
     
-    def writeTile(self, subsecRow, subsecCol, row, col, value):
-        return self.board.writeTile(subsecRow, subsecCol, row, col, value)
-    
-    def clearTile(self, subsecRow, subsecCol, row, col):
-        return self.board.clearTile(subsecRow, subsecCol, row, col)
+    def getFixed(self):
+        theBoard = self.board.board
+        output = []
+        tmpRow = []
+        for subsecRow in range(self.size):
+            for row in range(self.size):
+                for subsecCol in range(self.size):
+                    for col in range(self.size):
+                        tmpRow.append(theBoard[subsecRow][subsecCol][row][col].fixed)
+                output.append(tmpRow)
+                tmpRow = []
+        return output
 
-            
+    def writeTile(self, subsecRow, subsecCol, row, col, value, fix=False):
+        return self.board.writeTile(subsecRow, subsecCol, row, col, value, fix)
+
+    def clearTile(self, subsecRow, subsecCol, row, col):
+        return self.board.clearTile(subsecRow, subsecCol, row, col)     
 
     def checkWin(self):
         if (len(self.getEmpty()) > 0):
-            return "there are still empty tiles"
+            return False
         else:
-            output = "Congratulations, you have won the game!"
-            for elem in self.getPossib():
-                if (len(elem) > 0):
-                    output = "You have lost the game."
-            return output
+            return True
             
