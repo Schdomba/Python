@@ -89,7 +89,7 @@ class GUI:
                     quit()
 
             pygame.display.update()
-            self.clock.tick(15)
+            self.clock.tick(30)
             
     def drawLines(self):
         #position of thick line (between subsections)
@@ -141,12 +141,17 @@ class GUI:
         yoffset = tileHeight/2
         blitted = []
         values = self.sd.getBoard()
-        print(values)
+        fixed = self.sd.getFixed()
+        color = self.black
 
         for i in range(len(values)):
             for j in range(len(values[i])):
                 if values[i][j] != 0:
-                    temp = list(self.text_objects(str(values[i][j]), self.largeText, self.black))
+                    if fixed[i][j] is True:
+                        color = self.red
+                    else:
+                        color = self.black
+                    temp = list(self.text_objects(str(values[i][j]), self.largeText, color))
                     temp[1].center = ((j*tileWidth+xoffset), (i*tileHeight+yoffset))
                     blitted.append(self.gameDisplay.blit(temp[0], temp[1]))
         return blitted
@@ -175,13 +180,13 @@ class GUI:
         
         return(list([subsecRow] + [subsecCol] + [row] + [col] + [possib]))
 
-    #TODO
     def game_loop(self):
         #print("in game_loop")
         #print(self.sd.getBoard())
-        #self.sd.writeTile(0,0,0,0,1)
+        #self.sd.writeTile(0,0,0,0,1,True)
         self.subsecSize = self.sd.size
         self.boardSize = self.subsecSize*self.subsecSize
+        self.tilePos = []
         for i in range(self.boardSize):
             for j in range(self.boardSize):
                 self.tilePos.append([i*self.display_width/self.boardSize, j*self.display_height/self.boardSize])
@@ -208,15 +213,49 @@ class GUI:
                     pos = pygame.mouse.get_pos()
                     #calculate which tile and possible value that corresponds to
                     possib = self.calcPos(pos)
-                    print(possib)
                     #if player clicked on possible, write that to the tile
                     if not self.sd.writeTile(possib[0],possib[1],possib[2],possib[3],possib[4]):
                         #if tile already has a value, delete it
                         self.sd.clearTile(possib[0],possib[1],possib[2],possib[3])
-                    
+                
+                
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3: #3 is right mouse button
+                    #check where the player clicked
+                    pos = pygame.mouse.get_pos()
+                    #calculate which tile and possible value that corresponds to
+                    possib = self.calcPos(pos)
+                    #if player clicked on possible, write that to the tile as fixed Tile
+                    if not self.sd.writeTile(possib[0],possib[1],possib[2],possib[3],possib[4],True):
+                        #if tile already has a value, delete it
+                        self.sd.clearTile(possib[0],possib[1],possib[2],possib[3])
+
+            pygame.display.update()
+            if self.sd.checkWin():
+                break
+            #fixed framerate
+            self.clock.tick(60)
+        
+        while not gameExit:            
+            self.gameDisplay.fill(self.white)
+            temp = list(self.text_objects("Congratulations, you have won!", self.largeText, self.black))
+            temp[1].center = (self.display_width/2, self.display_height/2)
+            self.gameDisplay.blit(temp[0], temp[1])
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #1 is left mouse button
+                    gameExit = True
+
+
             pygame.display.update()
             #fixed framerate
             self.clock.tick(60)
+
+
 
 
 if __name__ == "__main__":
@@ -225,7 +264,8 @@ if __name__ == "__main__":
 
     pygame.init()   
     theGame = GUI()
-    theGame.game_intro()
-    theGame.game_loop()
+    while True:
+        theGame.game_intro()
+        theGame.game_loop()
     pygame.quit()
     quit()
