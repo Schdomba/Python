@@ -1,5 +1,3 @@
-import math
-import pygame
 class GUI:
     def __init__(self, width = 1000, height = 1000):
         self.display_width = width
@@ -229,12 +227,19 @@ class GUI:
                         #if tile already has a value, delete it
                         self.sd.clearTile(possib[0],possib[1],possib[2],possib[3])
 
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    solver = Solver(self.sd)
+                    self.sd = solver.solveNextTile()
+
             pygame.display.update()
             if self.sd.checkWin():
                 break
             #fixed framerate
             self.clock.tick(60)
-        
+
+    def winscreen(self):
+        gameExit = False
+
         while not gameExit:            
             self.gameDisplay.fill(self.white)
             temp = list(self.text_objects("Congratulations, you have won!", self.largeText, self.black))
@@ -256,16 +261,17 @@ class GUI:
             self.clock.tick(60)
 
 
-
-
 if __name__ == "__main__":
     import pygame
     from sudoku import Sudoku
+    import math
+    from makeSudoku import Solver
 
     pygame.init()   
     theGame = GUI()
     while True:
         theGame.game_intro()
         theGame.game_loop()
+        theGame.winscreen()
     pygame.quit()
     quit()
