@@ -26,19 +26,10 @@ class Solver:
                         elif (not self.sd.board.board[subsecRow][subsecCol][row][col].hasValue) \
                             and len(self.sd.board.board[subsecRow][subsecCol][row][col].possib) < len(self.sd.board.board[lowestSubsecRow][lowestSubsecCol][lowestRow][lowestCol].possib) \
                             and len(self.sd.board.board[subsecRow][subsecCol][row][col].possib) > 0:
-                            print("in elif statement")
                             lowestSubsecRow = subsecRow
                             lowestSubsecCol = subsecCol
                             lowestRow = row
                             lowestCol = col
-                        
-                        else:
-                            print("in else statement")
-                            print(str(subsecRow) + str(subsecCol) + str(row) + str(col))
-                            print(self.sd.board.board[subsecRow][subsecCol][row][col].numOfPossib)
-
-                            print(str(lowestSubsecRow) + str(lowestSubsecCol) + str(lowestRow) + str(lowestCol))
-                            print(self.sd.board.board[lowestSubsecRow][lowestSubsecCol][lowestRow][lowestCol].numOfPossib)
         
         possib = self.sd.board.board[lowestSubsecRow][lowestSubsecCol][lowestRow][lowestCol].possib
         #choose one of the possibles and write that to the tile (random or lowest?)
