@@ -15,60 +15,47 @@ class Tile:
     def __init__(self, numOfPossib):
         self.__numOfPossib = numOfPossib
         self.possib = list(range(1,self.__numOfPossib+1))
-        self.value = 0
+        self.__value = 0
         self.hasValue = False
-        self.fixed = False
+        self.__fixed = False
         
-        #===========================decorators of self.value=================================
-        @property
-        def value(self):
-            return self.__value
-        @value.setter
-        def value(self,val):
-            #set value if it is in possib, return True
-            if val in self.possib:
-                self.__value = val
-                self.hasValue = True
-                del self.possib[:] 
-                return True
-            #don't set value if it is not in possib, return False
-            else:
-                return False
-        @value.deleter
-        def value(self):
-            #if Tile has no value, return 0
-            if self.__value == 0 or self.fixed is True:
-                return 0
-            #if Tile has a value, clear it. Reset possib and hasValue, return cleared value
-            else:
-                val = self.__value
-                self.__value = 0
-                self.hasValue = False
-                self.possib = list(range(1,self.__numOfPossib+1))
-                return val
+    #===========================decorators of self.value=================================
+    @property
+    def value(self):
+        return self.__value
+    @value.setter
+    def value(self,val):
+        #set value if it is in possib
+        if val in self.possib:
+            self.__value = val
+            self.hasValue = True
+            del self.possib[:]
+    @value.deleter
+    def value(self):
+        raise RuntimeError("Can't delete attribute.")
 
-        #===========================decorators of self.fixed=================================
-        @property
-        def fixed(self):
-            return self.__fixed
-        @fixed.setter
-        def fixed(self, fix):
-            if fix is True:
-                if self.value == 0 and self.hasValue is False:
-                    self.__fixed = False
-                    raise RuntimeError("Can't set Tile to fixed because it has no value.")
-                else:
-                    self.__fixed = True
-                    return True
+    #===========================decorators of self.fixed=================================
+    @property
+    def fixed(self):
+        return self.__fixed
+    @fixed.setter
+    def fixed(self, fix):
+        if fix is True:
+            if self.value == 0 and self.hasValue is False:
+                self.__fixed = False
+                raise RuntimeError("Can't set Tile to fixed because it has no value.")
             else:
-                if self.fixed is True:
-                    raise RuntimeError("Can't unfix a fixed tile.")
-                else:
-                    self.__fixed = False
-                    return True
-        @fixed.deleter
-        def fixed(self):
-            raise RuntimeError("Fixed attribute cannot be deleted.")
+                self.__fixed = True
+                return True
+        else:
+            if self.fixed is True:
+                raise RuntimeError("Can't unfix a fixed tile.")
+            else:
+                self.__fixed = False
+                return True
+    @fixed.deleter
+    def fixed(self):
+            raise RuntimeError("Can't delete attribute.")
 
     #================================================================================
     # short: this function deletes a possible value from possib
@@ -101,3 +88,23 @@ class Tile:
             return True
         else:
             return False
+    #================================================================================
+    # short: this function clears the tiles value
+    #--------------------------------------------------------------------------------
+    # long:
+    #   after clearing the tile, every value is possible again. The board has to
+    #   delete the ones that aren't possible.
+    # paramters:
+    #   none
+    # return: number
+    #   the value that this tile had before clearing
+    #================================================================================
+    def clearValue(self):
+        if self.value == 0 or self.fixed is True:
+            return 0
+        else:
+            value = self.value
+            self.__value = 0
+            self.hasValue = False
+            self.possib = list(range(1,self.__numOfPossib+1))
+            return value
