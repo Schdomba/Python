@@ -31,18 +31,9 @@ class Board:
     #================================================================================
     def __init__(self, size=3):
         self.size = size
-        #create a board, made out of size*size subsections 
-        #(3x3 subsections or 9x9 tiles is standard sudoku)
+        #generate board of Tiles using a list comprehension
         #a board is a 4D array [subsecRow][subsecCol][row][col]
-        self.board = []
-        for subsecRow in range(self.size):
-            self.board.append([])
-            for subsecCol in range(self.size):
-                self.board[subsecRow].append([])
-                for row in range(self.size):
-                    self.board[subsecRow][subsecCol].append([])
-                    for col in range(self.size):
-                        self.board[subsecRow][subsecCol][row].append(Tile(self.size*self.size))
+        self.__board = [[[[Tile(self.size*self.size) for col in range(self.size)] for row in range(self.size)] for subsecRow in range(self.size)] for subsecCol in range(self.size)]
 
     #================================================================================
     # short: this function returns affected tiles
@@ -63,14 +54,14 @@ class Board:
         for i in range(self.size):
             for j in range (self.size):
                 # every tile in the same row
-                if self.board[subsecRow][i][row][j] not in affectedTiles:
-                    affectedTiles.append(self.board[subsecRow][i][row][j])
+                if self.__board[subsecRow][i][row][j] not in affectedTiles:
+                    affectedTiles.append(self.__board[subsecRow][i][row][j])
                 # every tile in the same column
-                if self.board[i][subsecCol][j][col] not in affectedTiles:
-                    affectedTiles.append(self.board[i][subsecCol][j][col])
+                if self.__board[i][subsecCol][j][col] not in affectedTiles:
+                    affectedTiles.append(self.__board[i][subsecCol][j][col])
                 # every tile in the same subsection
-                if self.board[subsecRow][subsecCol][i][j] not in affectedTiles:
-                    affectedTiles.append(self.board[subsecRow][subsecCol][i][j])
+                if self.__board[subsecRow][subsecCol][i][j] not in affectedTiles:
+                    affectedTiles.append(self.__board[subsecRow][subsecCol][i][j])
         return affectedTiles
 
     #================================================================================
@@ -124,7 +115,7 @@ class Board:
     #   False: this value cannot be written to the specified tile
     #================================================================================
     def writeTile(self, subsecRow, subsecCol, row, col, value, fix = False):
-        theTile = self.board[subsecRow][subsecCol][row][col]
+        theTile = self.__board[subsecRow][subsecCol][row][col]
         if theTile.hasValue:
             return False
         elif value in theTile.possib:
@@ -154,7 +145,7 @@ class Board:
     #   False: the tile cannot be cleared.
     #================================================================================
     def clearTile(self, subsecRow, subsecCol, row, col):
-        theTile = self.board[subsecRow][subsecCol][row][col]
+        theTile = self.__board[subsecRow][subsecCol][row][col]
         # if tile has no value it cannot be cleared
         if not theTile.hasValue:
             return False
@@ -185,5 +176,5 @@ class Board:
                     # if the value wasn't anywhere in the same row, column or subsection,
                     # add it to the possible values
                     if isPossible:
-                        self.board[pos[0]][pos[1]][pos[2]][pos[3]].addPossib(value)
+                        self.__board[pos[0]][pos[1]][pos[2]][pos[3]].addPossib(value)
                 return True
