@@ -178,3 +178,58 @@ class Board:
                     if isPossible:
                         self.__board[pos[0]][pos[1]][pos[2]][pos[3]].addPossib(value)
                 return True
+
+    #================================================================================
+    # short: getter function for tile value
+    #--------------------------------------------------------------------------------
+    # paramters:
+    #   subsecRow: row in which the subsection containing the tile is located
+    #   subsecCol: column in which the subsection containing the tile is located
+    #   row: row inside the subsection in which the tile is located
+    #   col: column inside the subsection in which the tile is located
+    # return: int
+    #   value of the tile
+    #================================================================================
+    def getTileVal(self, subsecRow, subsecCol, row, col):
+        return self.__board[subsecRow][subsecCol][row][col].value
+    #================================================================================
+    # short: getter function for tile hasValue
+    #--------------------------------------------------------------------------------
+    # paramters:
+    #   subsecRow: row in which the subsection containing the tile is located
+    #   subsecCol: column in which the subsection containing the tile is located
+    #   row: row inside the subsection in which the tile is located
+    #   col: column inside the subsection in which the tile is located
+    # return: boolean
+    #   True if tile has value
+    #   else False
+    #================================================================================
+    def getTileHasValue(self, subsecRow, subsecCol, row, col):
+        return self.__board[subsecRow][subsecCol][row][col].hasValue
+    #================================================================================
+    # short: getter function for tile possible values
+    #--------------------------------------------------------------------------------
+    # paramters:
+    #   subsecRow: row in which the subsection containing the tile is located
+    #   subsecCol: column in which the subsection containing the tile is located
+    #   row: row inside the subsection in which the tile is located
+    #   col: column inside the subsection in which the tile is located
+    # return: int []
+    #   possible values of the tile
+    #================================================================================
+    def getTilePossib(self, subsecRow, subsecCol, row, col):
+        return self.__board[subsecRow][subsecCol][row][col].possib
+    #================================================================================
+    # short: getter function for tile fixed
+    #--------------------------------------------------------------------------------
+    # paramters:
+    #   subsecRow: row in which the subsection containing the tile is located
+    #   subsecCol: column in which the subsection containing the tile is located
+    #   row: row inside the subsection in which the tile is located
+    #   col: column inside the subsection in which the tile is located
+    # return: boolean
+    #   True if tile is fixed
+    #   else False
+    #================================================================================
+    def getTileFixed(self, subsecRow, subsecCol, row, col):
+        return self.__board[subsecRow][subsecCol][row][col].fixed

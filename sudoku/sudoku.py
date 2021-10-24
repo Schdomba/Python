@@ -6,7 +6,6 @@ class Sudoku:
         self.board = Board(self.size)
     
     def getBoard(self):
-        theBoard = self.board.board
         tmpRow = []
         output = []
         printOutput = ""
@@ -14,8 +13,8 @@ class Sudoku:
             for row in range(self.size):
                 for subsecCol in range(self.size):
                     for col in range(self.size):
-                        tmpRow.append(theBoard[subsecRow][subsecCol][row][col].value)
-                        printOutput += str(theBoard[subsecRow][subsecCol][row][col].value)
+                        tmpRow.append(self.board.getTileVal(subsecRow, subsecCol, row, col))
+                        printOutput += str(self.board.getTileVal(subsecRow, subsecCol, row, col))
                     printOutput += "|"
                 output.append(tmpRow)
                 tmpRow = []
@@ -25,14 +24,13 @@ class Sudoku:
         return output
 
     def getEmpty(self):
-        theBoard = self.board.board
         output = []
         i = 0
         for subsecRow in range(self.size):
             for row in range(self.size):
                 for subsecCol in range(self.size):
                     for col in range(self.size):
-                        if not theBoard[subsecRow][subsecCol][row][col].hasValue:
+                        if not self.board.getTileHasValue(subsecRow, subsecCol, row, col):
                             output.append([])
                             output[i].append(subsecRow)
                             output[i].append(subsecCol)
@@ -42,26 +40,24 @@ class Sudoku:
         return output
 
     def getPossib(self):
-        theBoard = self.board.board
         output = []
         i = 0
         for subsecRow in range(self.size):
             for row in range(self.size):
                 for subsecCol in range(self.size):
                     for col in range(self.size):
-                        output.append(theBoard[subsecRow][subsecCol][row][col].possib)     
+                        output.append(self.board.getTilePossib(subsecRow, subsecCol, row, col))     
                         i += 1 
         return output
     
     def getFixed(self):
-        theBoard = self.board.board
         output = []
         tmpRow = []
         for subsecRow in range(self.size):
             for row in range(self.size):
                 for subsecCol in range(self.size):
                     for col in range(self.size):
-                        tmpRow.append(theBoard[subsecRow][subsecCol][row][col].fixed)
+                        tmpRow.append(self.board.getTileFixed(subsecRow, subsecCol, row, col))
                 output.append(tmpRow)
                 tmpRow = []
         return output
